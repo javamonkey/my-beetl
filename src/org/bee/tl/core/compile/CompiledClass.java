@@ -59,7 +59,7 @@ public class CompiledClass
 	protected String CR = "\n";
 	protected CoreScriptRunner scriptRunner;
 	protected boolean compileError = false;
-	public static int version = 127;
+	public static int version = 128;
 	protected NumberFactory nf = null;
 
 	public Resource getResource()
@@ -134,6 +134,17 @@ public class CompiledClass
 		return Arrays.asList(paras);
 	}
 
+	public Object defaultFormat(Object input,String pattern){
+		if(input==null){
+			return "";
+		}
+		Format format = scriptRunner.getDefaultFormat(input.getClass());
+		if (format == null)
+		{
+			throw new PreCompileException("can not find default format for class " + input.getClass());
+		}
+		return format.format(input, pattern);
+	}
 	public Object format(String funName, Object input, String pattern)
 	{
 		Format format = scriptRunner.getFormat(funName);

@@ -67,6 +67,20 @@ public class MethodUtil
 			return "890";
 		}
 	}
+	
+	
+	public static Object invoke(Object o,String methodName,Object[] paras) throws IllegalAccessException,
+	IllegalArgumentException, InvocationTargetException{
+		Class target = o.getClass();
+		Class[] parameterType = new Class[paras.length];
+		int i=0;
+		for(Object para:paras){
+			parameterType[i++] = para.getClass();
+		}
+		MethodConf mf = findMethod(target, methodName, parameterType);
+		Object result = invoke(o,mf,paras);
+		return result;
+	}
 
 	public static Object invoke(Object o, MethodConf conf, Object[] paras) throws IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException

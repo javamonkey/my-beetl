@@ -29,6 +29,11 @@ package org.bee.tl.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 用于FunctionPackage，包装一个类的某一个方法成为Function，如果这个方法最后一个参数是
@@ -42,6 +47,7 @@ public class FunctionWrapper implements Function{
 	boolean isReturnVoid = false ;
 	Class[] parameters ;
 	boolean requiredContext = false ;
+	String functionName = null;
 	public FunctionWrapper(Object o,Method m){
 		this.target = o;
 		this.method = m;
@@ -53,10 +59,15 @@ public class FunctionWrapper implements Function{
 			}
 		}
 		method.setAccessible(true);
+		this.functionName = m.getName();
+	}
+	
+	public FunctionWrapper(Object o,List<Method> ms){
+		
 	}
 	
 	public String getFunctionName(){
-		return method.getName();
+		return this.functionName;
 	}
 	
 	/* 如果目标方法有ctx参数，则传入，如果没有，则不传入
@@ -78,6 +89,7 @@ public class FunctionWrapper implements Function{
 		
 		try {
 			Object result = method.invoke(target, args);
+			
 			return result;
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException("参数错误"+e.getMessage());
@@ -86,6 +98,28 @@ public class FunctionWrapper implements Function{
 		} catch (InvocationTargetException e) {
 			Throwable t = e.getTargetException();
 			throw new RuntimeException(t);
+		}
+		
+	}
+	
+	public static List<FunctionWrapper> getFunctionWrapper(Object o){
+		Method[] ms = BeetlUtil.getSelfMethod(o);
+		//同名方法
+		Map<String,List<Method>> map = new HashMap<String,List<Method>>(); 
+		for(Method method:ms){
+			String name = method.getName();
+			List<Method> list = map.get(name);
+			if(list==null){
+				list = new ArrayList<Method>();		
+				map.put(name, list);
+			}
+			list.add(method);
+			
+		}
+		List<FunctionWrapper> fwList = new ArrayList<FunctionWrapper>();
+		for(Entry<String,List<Method>> entry:map.entrySet()){
+			String 
+			FunctionWrapper fw = new FunctionWrapper()
 		}
 		
 	}
