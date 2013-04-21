@@ -107,9 +107,10 @@ public class ScriptGlobal {
 	 * @param o
 	 */
 	public void registerFunctionPackage(String packageName, Object o) {
+		
+		List<FunctionWrapper>  list = FunctionWrapper.getFunctionWrapper(o);
 		Method[] ms = BeetlUtil.getSelfMethod(o);
-		for (Method m : ms) {
-			FunctionWrapper fw = new FunctionWrapper(o, m);
+		for (FunctionWrapper fw : list) {			
 			this.registerFunction(packageName + "." + fw.getFunctionName(), fw);
 		}
 

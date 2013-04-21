@@ -44,10 +44,12 @@ import java.util.Map.Entry;
 public class FunctionWrapper implements Function{
 	Object target;
 	Method method;
+	List<MethodContext> listMethod = null;
 	boolean isReturnVoid = false ;
 	Class[] parameters ;
 	boolean requiredContext = false ;
 	String functionName = null;
+	boolean isSingleMethod = true ;
 	public FunctionWrapper(Object o,Method m){
 		this.target = o;
 		this.method = m;
@@ -60,9 +62,14 @@ public class FunctionWrapper implements Function{
 		}
 		method.setAccessible(true);
 		this.functionName = m.getName();
+		isSingleMethod = true ;
 	}
 	
-	public FunctionWrapper(Object o,List<Method> ms){
+	public FunctionWrapper(Object o,List<MethodContext> ms){
+		functionName = ms.get(0).m.getName();
+		this.listMethod = ms;
+		isSingleMethod = false ;
+		this.target = o;
 		
 	}
 	
@@ -76,6 +83,70 @@ public class FunctionWrapper implements Function{
 	 */
 	public Object call(Object[] paras, Context ctx) {
 		
+		if(this.isSingleMethod){
+			return singleMethodCall(paras,ctx);
+		}else{
+			return mutilpleMethodCall(paras,ctx);
+		}
+		
+	}
+	
+	private Object mutilpleMethodCall(Object[] paras, Context ctx){
+		for(MethodContext mc :this.listMethod){
+			Method m = mc.m;
+			boolean cr = mc.contextRequired;
+			
+			Class[] args = cr?new Class[paras.length+1]:new Class[paras.length];
+			int i=0;
+			for(Object o:paras){
+				if(o!=null){
+					args[i++] = o.getClass();
+				}else{
+					args[i++] = null;
+				}
+				
+			}
+			
+			if(cr){
+				args[i] = Context.class;
+			}
+			try{
+				MethodConf methodConf = MethodUtil.findMethod(target.getClass(), this.functionName, args);
+				if(methodConf !=null){
+					//found it
+					if(cr){
+						Object[] realParas = new Object[paras.length+1];
+						int j = 0;
+						for(j=0;j<paras.length;j++){
+							realParas[j] = paras[j];
+						}
+						realParas[j] = ctx;
+						return MethodUtil.invoke(target, methodConf, realParas);
+					}else{
+						return MethodUtil.invoke(target, methodConf, paras);
+					}
+					
+				}else{
+					continue ;
+				}
+			}
+			catch (IllegalArgumentException e) {
+				throw new RuntimeException("参数错误"+e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException("非法调用"+e.getMessage());
+			} catch (InvocationTargetException e) {
+				Throwable t = e.getTargetException();
+				throw new RuntimeException(t);
+			}
+			
+			
+		}
+		
+		//still not find
+		throw new RuntimeException("找不到对应的调用方法："+target.getClass()+" name="+this.functionName);
+	}
+	
+	private Object singleMethodCall(Object[] paras, Context ctx){
 		Object[] args = null;
 		if(requiredContext){
 			args = new Object[paras.length+1];
@@ -99,29 +170,53 @@ public class FunctionWrapper implements Function{
 			Throwable t = e.getTargetException();
 			throw new RuntimeException(t);
 		}
-		
 	}
 	
 	public static List<FunctionWrapper> getFunctionWrapper(Object o){
 		Method[] ms = BeetlUtil.getSelfMethod(o);
 		//同名方法
-		Map<String,List<Method>> map = new HashMap<String,List<Method>>(); 
+		Map<String,List<MethodContext>> map = new HashMap<String,List<MethodContext>>(); 
+		
 		for(Method method:ms){
 			String name = method.getName();
-			List<Method> list = map.get(name);
+			List<MethodContext> list = map.get(name);
 			if(list==null){
-				list = new ArrayList<Method>();		
+				list = new ArrayList<MethodContext>();		
 				map.put(name, list);
 			}
-			list.add(method);
+			MethodContext mc = new MethodContext();
+			mc.m = method;
+			int len = method.getParameterTypes().length;
+			if(len!=0){
+				if(method.getParameterTypes()[len-1].equals(Context.class)){
+					mc.contextRequired = true ;
+				}
+			}			
+			list.add(mc);
 			
 		}
-		List<FunctionWrapper> fwList = new ArrayList<FunctionWrapper>();
-		for(Entry<String,List<Method>> entry:map.entrySet()){
-			String 
-			FunctionWrapper fw = new FunctionWrapper()
-		}
 		
+		List<FunctionWrapper> fwList = new ArrayList<FunctionWrapper>();
+		for(Entry<String,List<MethodContext>> entry:map.entrySet()){
+			
+			if(entry.getValue().size()==0){
+				FunctionWrapper fw = new FunctionWrapper(o,entry.getValue().get(0).m);
+				fwList.add(fw);
+			}else{
+				FunctionWrapper fw = new FunctionWrapper(o,entry.getValue());
+				fwList.add(fw);
+			}
+			
+			
+		}
+		return fwList;
+		
+	}
+	
+	static class MethodContext
+	{
+		Method m = null;
+		boolean contextRequired = false ;
 	}
 	
 }

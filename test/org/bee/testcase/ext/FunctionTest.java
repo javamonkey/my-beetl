@@ -86,6 +86,14 @@ public class FunctionTest extends BasicTestCase
 
 	}
 
+	public void testWrapper() throws IOException, BeeException{
+		FunctionWrapperSample fw = new FunctionWrapperSample();
+		this.gt.registerFunctionPackage("love", fw);
+		Template t = this.gt.getFileTemplate("/ext/wrapper_template.html");		
+		String str = t.getTextAsString();
+		Assert.assertEquals(this.getFileContent("/ext/wrapper_expected.html"), str);
+	}
+	
 	class SplitFunction implements Function
 	{
 
