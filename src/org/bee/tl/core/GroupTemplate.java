@@ -868,7 +868,7 @@ public class GroupTemplate
 		}
 		catch (MalformedURLException e)
 		{
-			// TODO Auto-generated catch block
+			//不可能发生
 			e.printStackTrace();
 		}
 	}

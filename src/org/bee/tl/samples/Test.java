@@ -3,7 +3,6 @@ package org.bee.tl.samples;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.bee.tl.core.GroupTemplate;
 import org.bee.tl.core.Template;
@@ -23,8 +22,8 @@ public class Test
 		 		group.setDebug(true);
 		 		group.enableNativeCall();
 		 		Map compileConfig = new HashMap();
-		 		compileConfig.put(GroupTemplate.OPTIMIZE_KEEP_SOURCE, true);
-		 		group.enableOptimize(compileConfig);
+//		 		compileConfig.put(GroupTemplate.OPTIMIZE_KEEP_SOURCE, true);
+//		 		group.enableOptimize(compileConfig);
 		 		 //		group.enableOptimize();
 		 		  group.enableDirectOutputByte();
 		 		 
@@ -37,11 +36,11 @@ public class Test
 		 
 		 		System.out.println(template.getTextAsString());
 		 		
-		 		template = group.getFileTemplate("/helloworld.html");
-		 		template.set("post",new Person());
-		 		//template.set("user",new Person());
-		 		System.out.println(template.getTextAsString());
-		 		
+//		 		template = group.getFileTemplate("/helloworld.html");
+//		 		template.set("post",new Person());
+//		 		//template.set("user",new Person());
+//		 		System.out.println(template.getTextAsString());
+//		 		
 
 		
 	

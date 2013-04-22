@@ -155,7 +155,7 @@ public class Transformator
 		}
 		checkAppendCR();
 		parser();
-
+		orginal.close();
 		return new StringReader(sb.toString());
 	}
 

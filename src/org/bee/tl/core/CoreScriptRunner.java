@@ -107,6 +107,19 @@ public class CoreScriptRunner
 	{
 		this.reader = reader;
 	}
+	
+
+	/**
+	 * 如果模板已经转化成类，清除此模板，
+	 */
+	protected void clearAST(){
+		antlrReader = null;
+		lexer = null;
+		tokens = null;
+		parser = null;
+		tree = null;
+		
+	}
 
 	public void parse() throws IOException
 	{
