@@ -18,5 +18,9 @@ public class FunctionWrapperSample {
 		return "hello ctx";
 	}
 	
+	public String datacache(String name,String value){
+		return name+value;
+	}
+	
 	
 }

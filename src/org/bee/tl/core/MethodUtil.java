@@ -10,6 +10,8 @@ import static org.bee.tl.core.MethodConf.SHORT_CONVERT;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -232,6 +234,37 @@ public class MethodUtil {
 			return null;
 		}
 
+	}
+	
+	/** java对象的默认值
+	 * @param type
+	 * @return
+	 */
+	public static Object getDefaultValueByType(Class type){
+		if(type.equals(String.class)){
+			return "";
+		}else if(type.equals(int.class)||type.equals(Integer.class))
+		{
+			return 0;
+		}else if(type.equals(long.class)||type.equals(Long.class)){
+			return 0l;
+		}else if(type.equals(double.class)||type.equals(Double.class)){
+			return 0.0d;
+		}else if(type.equals(float.class)||type.equals(Float.class)){
+			return 0.0f;
+		}else if(type.equals(short.class)||type.equals(Short.class)){
+			return 0;
+		}else if(type.equals(BigDecimal.class)){
+			return  BigDecimal.ZERO;
+		}else if(type.equals(BigInteger.class)){
+			return BigInteger.ZERO;
+		}else if(type.equals(boolean.class)||type.equals(Boolean.class)){
+			return Boolean.FALSE;
+		}else{
+			return null;
+		}
+			
+		
 	}
 
 }

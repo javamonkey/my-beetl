@@ -44,6 +44,7 @@ import java.util.Map.Entry;
 public class FunctionWrapper implements Function{
 	Object target;
 	Method method;
+	Class[] parametersType = null;
 	List<MethodContext> listMethod = null;
 	boolean isReturnVoid = false ;
 	Class[] parameters ;
@@ -53,6 +54,7 @@ public class FunctionWrapper implements Function{
 	public FunctionWrapper(Object o,Method m){
 		this.target = o;
 		this.method = m;
+		parametersType = method.getParameterTypes();
 		if(m.getReturnType()==null) isReturnVoid = true;
 		parameters = m.getParameterTypes();
 		if(parameters.length!=0){
@@ -149,14 +151,32 @@ public class FunctionWrapper implements Function{
 	private Object singleMethodCall(Object[] paras, Context ctx){
 		Object[] args = null;
 		if(requiredContext){
-			args = new Object[paras.length+1];
-			for(int i=0;i<paras.length;i++){
-				args[i] = paras[i];
+			if(paras.length>parametersType.length+1){
+				throw new RuntimeException("期望参数个数与实际参数不匹配:"+method.toString());
 			}
-			args[args.length-1] = ctx;
+			args = new Object[parametersType.length+1];
+			
+			
 		}else{
-			args = paras;
+			if(paras.length>parametersType.length){
+				throw new RuntimeException("期望参数个数与实际参数不匹配:"+method.toString());
+			}
+			args = new Object[parametersType.length];
+		
 		}
+		
+		int i=0;
+		for(;i<paras.length;i++){
+			args[i] = paras[i];
+		}
+		for(;i<parametersType.length;i++){
+			args[i] = MethodUtil.getDefaultValueByType(parametersType[i]);
+		}
+		
+		if(requiredContext){
+			args[args.length-1] = ctx;
+		}
+		
 		
 		try {
 			Object result = method.invoke(target, args);
@@ -199,7 +219,7 @@ public class FunctionWrapper implements Function{
 		List<FunctionWrapper> fwList = new ArrayList<FunctionWrapper>();
 		for(Entry<String,List<MethodContext>> entry:map.entrySet()){
 			
-			if(entry.getValue().size()==0){
+			if(entry.getValue().size()==1){
 				FunctionWrapper fw = new FunctionWrapper(o,entry.getValue().get(0).m);
 				fwList.add(fw);
 			}else{
