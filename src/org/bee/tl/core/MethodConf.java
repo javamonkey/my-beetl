@@ -7,6 +7,7 @@ public class MethodConf
 	public Method method;
 	public int[] convert;
 	public boolean isNeedConvert;
+	public boolean isExactMatch = true ;
 	public final static int  INT_CONVERT =1 ;
 	public final static int  LONG_CONVERT =2 ;
 	public final static int  DOUBLE_CONVERT =3 ;

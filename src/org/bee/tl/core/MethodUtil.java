@@ -112,8 +112,7 @@ public class MethodUtil {
 	 */
 	public static MethodConf findMethod(Class target, String methodName,
 			Class[] parameterType) {
-		int[] convert = new int[parameterType.length];
-
+	
 		Method[] ms = cacheMap.get(target);
 		if (ms == null) {
 			ms = target.getMethods();
@@ -155,17 +154,27 @@ public class MethodUtil {
 
 		return null;
 	}
-
+	
 	public static MethodConf match(Method method, Class[] parameterType) {
+		return match(method,parameterType,true);
+	}
+
+	public static MethodConf match(Method method, Class[] parameterType,boolean exact) {
 		Class[] paras = method.getParameterTypes();
-		if (paras.length != parameterType.length) {
+		if(exact){
+			if (paras.length != parameterType.length) {
+				return null;
+			}
+		}
+		if(paras.length<parameterType.length){
 			return null;
 		}
+		
 		int[] convert = new int[parameterType.length];
 
 		boolean isMatch = true;
 
-		for (int j = 0; j < paras.length; j++) {
+		for (int j = 0; j < parameterType.length; j++) {
 
 			if (parameterType[j] == null) {
 				// 认为匹配
@@ -228,6 +237,9 @@ public class MethodUtil {
 					mc.isNeedConvert = true;
 					break;
 				}
+			}
+			if(parameterType.length!=paras.length){
+				mc.isExactMatch = false;
 			}
 			return mc;
 		} else {

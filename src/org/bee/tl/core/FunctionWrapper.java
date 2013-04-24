@@ -113,6 +113,7 @@ public class FunctionWrapper implements Function{
 				args[i] = Context.class;
 			}
 			try{
+			
 				MethodConf methodConf = MethodUtil.findMethod(target.getClass(), this.functionName, args);
 				if(methodConf !=null){
 					//found it
