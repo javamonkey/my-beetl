@@ -22,5 +22,18 @@ public class FunctionWrapperSample {
 		return name+value;
 	}
 	
+	public String substring(String str,int from,boolean  isLowCase){
+		String result = str.substring(from);
+		if(isLowCase){
+			return result.toLowerCase();
+		}else{
+			return result;
+		}
+	}
+	
+	public String substring(String str){
+		return str;
+	}
+	
 	
 }

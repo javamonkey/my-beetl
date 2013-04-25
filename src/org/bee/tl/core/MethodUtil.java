@@ -112,7 +112,7 @@ public class MethodUtil {
 	 */
 	public static MethodConf findMethod(Class target, String methodName,
 			Class[] parameterType) {
-	
+
 		Method[] ms = cacheMap.get(target);
 		if (ms == null) {
 			ms = target.getMethods();
@@ -125,27 +125,28 @@ public class MethodUtil {
 				MethodConf selfMc = match(temp, parameterType);
 				if (selfMc != null) {
 					Class[] interfaces = target.getInterfaces();
-					//优先返回接口
+					// 优先返回接口
 					for (Class inf : interfaces) {
 						if (inf.equals(java.io.Serializable.class)) {
 							continue;
 						}
-						MethodConf interfaceMc = findMethod(inf, methodName, parameterType);
+						MethodConf interfaceMc = findMethod(inf, methodName,
+								parameterType);
 						if (interfaceMc != null) {
-							return interfaceMc ;
-						}
-					}					
-					//在返回父类
-					Class parent = target.getSuperclass();
-					if (parent != null && !parent.equals(Object.class)) {
-						MethodConf parentMc = findMethod(parent, methodName, parameterType);
-						if(parentMc!=null){
-							return parentMc ;
+							return interfaceMc;
 						}
 					}
-					//最后返回自己
-					return selfMc ;
-					
+					// 在返回父类
+					Class parent = target.getSuperclass();
+					if (parent != null && !parent.equals(Object.class)) {
+						MethodConf parentMc = findMethod(parent, methodName,
+								parameterType);
+						if (parentMc != null) {
+							return parentMc;
+						}
+					}
+					// 最后返回自己
+					return selfMc;
 
 				}
 			}
@@ -154,23 +155,22 @@ public class MethodUtil {
 
 		return null;
 	}
-	
+
 	public static MethodConf match(Method method, Class[] parameterType) {
-		return match(method,parameterType,true);
+		return match(method, parameterType, method.getParameterTypes().length);
 	}
 
-	public static MethodConf match(Method method, Class[] parameterType,boolean exact) {
+	/**
+	 * 看给定的参数是否匹配给定方法的前parameterCount参数 joelli
+	 */
+	public static MethodConf match(Method method, Class[] parameterType,
+			int parameterCount) {
 		Class[] paras = method.getParameterTypes();
-		if(exact){
-			if (paras.length != parameterType.length) {
-				return null;
-			}
-		}
-		if(paras.length<parameterType.length){
+		if (parameterType.length > parameterCount) {
 			return null;
 		}
-		
-		int[] convert = new int[parameterType.length];
+
+		int[] convert = new int[parameterCount];
 
 		boolean isMatch = true;
 
@@ -222,6 +222,17 @@ public class MethodUtil {
 				} else if (paras[j] == Short.class) {
 					convert[j] = SHORT_CONVERT;
 				}
+			}
+			else if (paras[j] == Boolean.class) {
+				if (parameterType[j] == boolean.class
+						|| parameterType[j] == Boolean.class) {
+					convert[j] = NO_CONVERT;
+				}
+			} else if (paras[j] == boolean.class) {
+				if (parameterType[j] == boolean.class
+						|| parameterType[j] == Boolean.class) {
+					convert[j] = NO_CONVERT;
+				}
 			} else {
 				isMatch = false;
 			}
@@ -238,7 +249,7 @@ public class MethodUtil {
 					break;
 				}
 			}
-			if(parameterType.length!=paras.length){
+			if (parameterType.length != parameterCount) {
 				mc.isExactMatch = false;
 			}
 			return mc;
@@ -247,36 +258,36 @@ public class MethodUtil {
 		}
 
 	}
-	
-	/** java对象的默认值
+
+	/**
+	 * java对象的默认值
+	 * 
 	 * @param type
 	 * @return
 	 */
-	public static Object getDefaultValueByType(Class type){
-		if(type.equals(String.class)){
+	public static Object getDefaultValueByType(Class type) {
+		if (type.equals(String.class)) {
 			return "";
-		}else if(type.equals(int.class)||type.equals(Integer.class))
-		{
+		} else if (type.equals(int.class) || type.equals(Integer.class)) {
 			return 0;
-		}else if(type.equals(long.class)||type.equals(Long.class)){
+		} else if (type.equals(long.class) || type.equals(Long.class)) {
 			return 0l;
-		}else if(type.equals(double.class)||type.equals(Double.class)){
+		} else if (type.equals(double.class) || type.equals(Double.class)) {
 			return 0.0d;
-		}else if(type.equals(float.class)||type.equals(Float.class)){
+		} else if (type.equals(float.class) || type.equals(Float.class)) {
 			return 0.0f;
-		}else if(type.equals(short.class)||type.equals(Short.class)){
+		} else if (type.equals(short.class) || type.equals(Short.class)) {
 			return 0;
-		}else if(type.equals(BigDecimal.class)){
-			return  BigDecimal.ZERO;
-		}else if(type.equals(BigInteger.class)){
+		} else if (type.equals(BigDecimal.class)) {
+			return BigDecimal.ZERO;
+		} else if (type.equals(BigInteger.class)) {
 			return BigInteger.ZERO;
-		}else if(type.equals(boolean.class)||type.equals(Boolean.class)){
+		} else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
 			return Boolean.FALSE;
-		}else{
+		} else {
 			return null;
 		}
-			
-		
+
 	}
 
 }
