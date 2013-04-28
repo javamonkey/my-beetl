@@ -22,24 +22,22 @@ public class Test
 		 		group.setDebug(true);
 		 		group.enableNativeCall();
 		 		Map compileConfig = new HashMap();
-//		 		compileConfig.put(GroupTemplate.OPTIMIZE_KEEP_SOURCE, true);
-//		 		group.enableOptimize(compileConfig);
+	 		   compileConfig.put(GroupTemplate.OPTIMIZE_KEEP_SOURCE, true);
+		 		group.enableOptimize(compileConfig);
 		 		 //		group.enableOptimize();
 		 		  group.enableDirectOutputByte();
 		 		 
 		 		Template template = group.getFileTemplate("/helloworld.html");
-		 
-		 	
-		 		template.set("post",new Person());
-		 		template.set("user",new Person());
-		 	
+		 		
+		 		template.set("a",3);
+		 		template.set("b",3);
 		 
 		 		System.out.println(template.getTextAsString());
 		 		
-//		 		template = group.getFileTemplate("/helloworld.html");
-//		 		template.set("post",new Person());
-//		 		//template.set("user",new Person());
-//		 		System.out.println(template.getTextAsString());
+	 		template = group.getFileTemplate("/helloworld.html");
+	 		template.set("a",null);
+	 		template.set("b",null);
+		 		System.out.println(template.getTextAsString());
 //		 		
 
 		

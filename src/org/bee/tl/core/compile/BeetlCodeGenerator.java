@@ -854,7 +854,39 @@ public class BeetlCodeGenerator
 
 						if (tokeType == BeeParser.EQUAL || tokeType == BeeParser.NOT_EQUAL)
 						{
-
+							//为了保证 null==null 这种情况仍然可以比较
+							String fun = null ;
+							if(tokeType == BeeParser.EQUAL){
+								fun = "isObjectSame";
+							}else{
+								fun = "isObjectNotSame";
+							}
+							
+							print(fun+"(");
+							if (left.getTypeClass().isPrimitive())
+							{
+								print("nf.y(");
+								writeTree(left);
+								print(")");
+							}else{
+								writeTree(left);
+							}
+							
+							print(",");
+							
+							if (right.getTypeClass().isPrimitive())
+							{
+								print("nf.y(");
+								writeTree(right);
+								print(")");
+							}else{
+								writeTree(right);
+							}
+							
+							print(")");
+							
+							
+							/*
 							String equal = ".equals(";
 							if (left.getTypeClass().getRawType().equals(NullClass.class)
 									|| right.getTypeClass().getRawType().equals(NullClass.class))
@@ -894,6 +926,8 @@ public class BeetlCodeGenerator
 								print(")");
 							}
 							print(")");
+							
+							*/
 
 						}
 

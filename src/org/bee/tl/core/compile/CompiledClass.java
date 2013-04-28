@@ -285,6 +285,36 @@ public class CompiledClass
 		}
 
 	}
+	
+	public boolean isObjectNotSame(Object v1,Object v2){
+		return !this.isObjectSame(v1, v2);
+	}
+	
+	public boolean isObjectSame(Object v1,Object v2){
+		if(v1==null&&v2==null){
+			return true ;
+		}
+		if (v1 != null || v2 != null)
+		{
+			if (v1 != null)
+			{
+				return v1.equals(v2);
+			}
+			else
+			{
+				return v2.equals(v1);
+			}
+
+		}
+		else if (v1 == null)
+		{
+			return v2 == null;
+		}
+		else
+		{
+			return v1 == null;
+		}
+	}
 
 	// public void checkFunction(Map<String,Class> map){
 	// Iterator<Map.Entry<String,Class>> it = map.entrySet().iterator();
