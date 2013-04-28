@@ -29,8 +29,8 @@ public class Test
 		 		 
 		 		Template template = group.getFileTemplate("/helloworld.html");
 		 		
-		 		template.set("a",3);
-		 		template.set("b",3);
+		 		template.set("a",new Object());
+		 		template.set("b","3");
 		 
 		 		System.out.println(template.getTextAsString());
 		 		
