@@ -23,9 +23,9 @@ public class Test
 		 		group.enableNativeCall();
 		 		Map compileConfig = new HashMap();
 	 		   compileConfig.put(GroupTemplate.OPTIMIZE_KEEP_SOURCE, true);
-		 		group.enableOptimize(compileConfig);
+//		 		group.enableOptimize(compileConfig);
 		 		 //		group.enableOptimize();
-		 		  group.enableDirectOutputByte();
+//		 		  group.enableDirectOutputByte();
 		 		 
 		 		Template template = group.getFileTemplate("/helloworld.html");
 		 		
@@ -34,10 +34,10 @@ public class Test
 		 
 		 		System.out.println(template.getTextAsString());
 		 		
-	 		template = group.getFileTemplate("/helloworld.html");
-	 		template.set("a",null);
-	 		template.set("b",null);
-		 		System.out.println(template.getTextAsString());
+//	 		template = group.getFileTemplate("/helloworld.html");
+//	 		template.set("a",null);
+//	 		template.set("b",null);
+//		 		System.out.println(template.getTextAsString());
 //		 		
 
 		
