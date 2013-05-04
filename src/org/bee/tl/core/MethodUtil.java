@@ -123,7 +123,7 @@ public class MethodUtil {
 			temp = ms[i];
 			if (temp.getName().equals(methodName)) {
 				MethodConf selfMc = match(temp, parameterType);
-				if (selfMc != null) {
+				if (selfMc != null&&selfMc.isExactMatch) {
 					Class[] interfaces = target.getInterfaces();
 					// 优先返回接口
 					for (Class inf : interfaces) {
@@ -156,7 +156,7 @@ public class MethodUtil {
 		return null;
 	}
 
-	public static MethodConf match(Method method, Class[] parameterType) {
+	public static MethodConf match(Method method, Class[] parameterType) {		
 		return match(method, parameterType, method.getParameterTypes().length);
 	}
 
