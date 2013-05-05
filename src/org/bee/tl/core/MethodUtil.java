@@ -157,18 +157,30 @@ public class MethodUtil {
 	}
 
 	public static MethodConf match(Method method, Class[] parameterType) {		
-		return match(method, parameterType, method.getParameterTypes().length);
+		return match(method, parameterType,-1);
 	}
 
-	/**
-	 * 看给定的参数是否匹配给定方法的前parameterCount参数 joelli
+	
+	/**看给定的参数是否匹配给定方法的前parameterCount参数 joelli
+	 * @param method 
+	 * @param parameterType 输入的参数
+	 * @param parameterCount 如果为-1，则是精确匹配，输入参数与方法得参数个数必须一致
+	 * @return
 	 */
 	public static MethodConf match(Method method, Class[] parameterType,
 			int parameterCount) {
 		Class[] paras = method.getParameterTypes();
-		if (parameterType.length > parameterCount) {
+		if(parameterCount==-1){			
+			if(parameterType.length!=paras.length){
+				return null;
+			}
+			parameterCount = parameterType.length;
+		}
+		
+		if ( parameterType.length > parameterCount) {
 			return null;
 		}
+		
 
 		int[] convert = new int[parameterCount];
 

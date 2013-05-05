@@ -31,6 +31,8 @@ public class Test
 		 		
 		 		template.set("a",new Object());
 		 		template.set("b","3");
+		 		template.set("user", new User());
+		 		template.set("ar", new ActivityRecord2());
 		 
 		 		System.out.println(template.getTextAsString());
 		 		
